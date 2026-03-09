@@ -1,0 +1,91 @@
+#### Train TF-SepDualNet (without knowledge distillation) ####
+
+trainer:
+  logger:
+    # 同时启用TensorBoard和CSVLogger
+    - class_path: lightning.pytorch.loggers.TensorBoardLogger
+      init_args:
+        save_dir: log
+        name: tfsepdualnet_td
+    - class_path: lightning.pytorch.loggers.CSVLogger
+      init_args:
+        save_dir: log
+        name: tfsepdualnet_td  # 与TensorBoardLogger的name保持一致，共享目录
+    # 其他配置不变...
+  callbacks:
+      # Show epoch instead of step on tensor board
+      - class_path: util.OverrideEpochStepCallback
+      - class_path: lightning.pytorch.callbacks.LearningRateMonitor
+        init_args:
+          logging_interval: epoch
+      - class_path: lightning.pytorch.callbacks.ModelCheckpoint
+        init_args:
+          save_top_k: 1
+          monitor: val_acc
+          mode: max
+          filename: '{epoch}-{val_acc:.4f}'
+      - class_path: util.DomainAdaptationValidator  # 新增
+        init_args:
+          source_domain_indices: [ 0, 1, 2 ]
+          target_domain_indices: [ 3, 4, 5 ]
+  # Max training epochs
+  max_epochs: 150
+
+ckpt_path: null
+
+model:
+  class_path: model.lit_asc.LitAscWithDomainAdaptationSystem
+  init_args:
+    backbone:
+      class_path: model.backbones.TFSepDualNet
+      init_args:
+        in_channels: 1
+        base_channels: 64
+        depth: 17
+        num_classes: 10
+        num_device_domains: 9
+        num_city_domains: 10
+    # Set to ``null`` if not applied
+    data_augmentation:
+      mix_up: null
+      mix_style:
+        class_path: util.FreqMixStyle
+        init_args:
+          alpha: 0.4
+          p: 0.8
+      spec_aug: null
+      dir_aug:
+        class_path: util.DeviceImpulseResponseAugmentation
+        init_args:
+          path_ir: datasets/microphone_impulse_response
+          p: 0.4
+    class_label: scene
+    domain_label: device
+    spec_extractor:
+      class_path: util.CpMel
+      init_args:
+        n_mels: 512
+
+data:
+  # Wrapped data module of train, valid, test DataLoaders
+  class_path: data.data_module.DataModuleWithTarget
+  init_args:
+    meta_dir: data/meta_dcase_2022
+    target_set: total
+    valid_subset: valid
+    audio_dir: datasets/TAU-urban-acoustic-scenes-2022-mobile-development/development
+    batch_size: 256
+    num_workers: 8
+    pin_memory: true
+    sampling_rate: 32000
+    train_subset: train
+
+optimizer:
+  class_path: torch.optim.Adam
+  init_args:
+    lr: 0.004
+lr_scheduler:
+  class_path: torch.optim.lr_scheduler.CosineAnnealingWarmRestarts
+  init_args:
+    T_0: 10
+    T_mult: 2
