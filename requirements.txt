@@ -1,10 +1,11 @@
+torch
+torchaudio
 librosa
+numpy
 pandas
 h5py
-numpy
 matplotlib
 tqdm
-lightning
 scikit-learn
 timm
 torchinfo
