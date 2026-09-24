@@ -1,6 +1,6 @@
 # Implementation and result provenance
 
-## Scope of this revision
+## Stage 1 presentation update
 
 This is the first presentation update, prepared against commit `c729fed58be411139d3a75a9946145735f783b56`.
 
@@ -10,6 +10,21 @@ This is the first presentation update, prepared against commit `c729fed58be41113
 - Correct two misleading source comments without changing executable Python.
 
 No training, evaluation, or log reanalysis was performed. No architecture, loss, optimizer, seed, configuration, manifest, checkpoint, or historical metric was changed.
+
+## Stage 2 maintenance update
+
+A second maintenance pass improves repository hygiene and the robustness of the auxiliary log-analysis workflow without changing the TF-SepDualNet training procedure or historical reported results.
+
+Changes in this stage:
+
+- Removed tracked IDE metadata and Python bytecode/cache files.
+- Extended `.gitignore` for local datasets, experiment logs, generated outputs, and checkpoints.
+- Declared the direct PyTorch and torchaudio runtime dependencies.
+- Removed the duplicate Lightning dependency declaration.
+- Updated log analysis to select `version_N` directories by numeric version rather than lexical ordering.
+- Updated domain-gap visualization so negative source–target gaps remain visible.
+
+No model architecture, training loss, optimizer, dataset split, checkpoint, configuration, or historical reported metric was changed. No clean-environment reproduction or new experiment was performed in this stage.
 
 ## Poster provenance
 
@@ -49,6 +64,5 @@ These items require a separate experiment or behavior-changing maintenance stage
 3. Pin a tested environment and rerun the necessary baseline/evaluation.
 4. Add genuine loss/head ablations rather than inferring them from YAML names.
 5. Measure TF-SepDualNet parameters/MACs separately from the team's student model.
-6. Review the log analysis script: lexical version-directory ordering and clipping negative domain-gap plot limits can affect displayed summaries. They are deliberately not changed here because historical outputs could change.
 
 No statement in this document replaces the poster's historical numbers; it describes how much has been verified in this maintenance pass.
