@@ -355,7 +355,7 @@ class LitAscWithDomainAdaptationSystem(LitAcousticSceneClassificationSystem):
         alpha = self._get_alpha(self.current_epoch, batch_idx, total_steps_per_epoch)
 
         # 3. TFSepDualNet前向传播（训练模式）
-        # 输出：设备预测、城市预测、源域双场景头、目标域双场景头（已softmax）
+        # 输出：设备/城市 logits、源域双场景头 logits、目标域双场景头 logits（未做 softmax）
         pre_device, pre_city, f1_src, f2_src, t1_tgt, t2_tgt = self.backbone(
             x=x_s, x_t=x_t, type="train", alpha=alpha
         )

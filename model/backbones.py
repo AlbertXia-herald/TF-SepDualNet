@@ -403,7 +403,7 @@ class TFSepDualNet(_BaseBackbone):
             nn.Flatten(),
             nn.Linear(base_channels, num_device_domains)
         )
-        # 城市域分类：160→64→9（假设城市域数量也为9）
+        # 城市域分类：160→base_channels→num_city_domains（默认10类）
         self.domain_city = nn.Sequential(
             ConvBnRelu(160, base_channels, 1),
             nn.AdaptiveAvgPool2d((1, 1)),
