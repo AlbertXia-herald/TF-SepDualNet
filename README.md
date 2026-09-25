@@ -86,8 +86,8 @@ The experiment code and configuration are preserved in this presentation update.
 ### 1. Set up the project
 
 ```bash
-git clone https://github.com/AlbertXia-herald/TF-SepDualnet-used-in-acoustic-scene-classification.git
-cd TF-SepDualnet-used-in-acoustic-scene-classification
+git clone https://github.com/AlbertXia-herald/TF-SepDualNet.git
+cd TF-SepDualNet
 ```
 
 Use a Python environment with compatible PyTorch and torchaudio installations, then install the listed dependencies:
